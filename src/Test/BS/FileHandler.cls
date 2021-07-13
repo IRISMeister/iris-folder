@@ -14,7 +14,7 @@ Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %Registered
 	Set tSC=$$$OK
 	Try {
 		;If ##class(%File).Exists(..targetpath_"\READY.SEM") Quit
-		If ##class(%File).Exists(##class(%File).NormalizeFilename("READY.SEM",..targetpath)) Quit
+		If ##class(%File).Exists($$$FileNormalizeFilename(..targetpath_"/READY.SEM",)) Quit
 		
 		Set latest=$G(^log)-1 Quit:latest<1
 		Set tSC=..Exec(latest)
@@ -53,7 +53,7 @@ Method Exec(latest) As %Status
 			;
 			While(rs.Next()) {
 				Set fromfile=rs.Name
-				Set tofile=##class(%File).NormalizeFilename(rs.ItemName,..targetpath)
+				Set tofile=$$$FileNormalizeFilename(..targetpath_"/"_rs.ItemName)
 				Set done=1
 			}
 			; process the latest file only.
@@ -67,8 +67,8 @@ Method Exec(latest) As %Status
 		}
 		; If there is no file to process, don't create a semaphore file.
 		If done {
-			Set fromfile=##class(%File).NormalizeFilename("READY.SEM",..basepath_"\..")
-			Set tofile=##class(%File).NormalizeFilename("READY.SEM",..targetpath)
+			Set fromfile=$$$FileNormalizeFilename(..basepath_"/../READY.SEM")
+			Set tofile=$$$FileNormalizeFilename(..targetpath_"/READY.SEM")
 			Set tBool=##class(%Library.File).CopyFile(fromfile,tofile,,.ret)
 			$$$LOGINFO("Create semaphor. Copy "_fromfile_" to "_tofile_" tBool:"_tBool_" ret:"_ret)
 		}
