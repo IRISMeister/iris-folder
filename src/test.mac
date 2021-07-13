@@ -1,0 +1,6 @@
+ROUTINE test
+ Set rs=##class(%ResultSet).%New("%File:FileSet")
+ Do rs.Execute("C:\temp\iris-folder\in_folder\000")
+ While (rs.Next()) {
+    w rs.Name,!
+ }
